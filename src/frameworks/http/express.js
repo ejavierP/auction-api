@@ -1,9 +1,15 @@
 const express = require("express");
-
-function createExpressApp(routers) {
+const http = require("http");
+const socketIo = require("socket.io");
+const socketHandler = require('./socket');
+function createExpressApp(routers,bidRepository) {
   let app = express();
 
+  const server = http.createServer(app);
+  const io = socketIo(server);
   app.use(express.json());
+  app.use(express.static('public'));
+  socketHandler(io,bidRepository);
 
   for (let router of routers) {
     app.use(router);
@@ -11,11 +17,13 @@ function createExpressApp(routers) {
 
   const port = 8080;
 
-  app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+  
+
+  server.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
   });
 
   return app;
 }
 
-module.exports = createExpressApp;
+module.exports = { createExpressApp };

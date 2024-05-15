@@ -20,7 +20,10 @@ function createBidRouter(bidRepository) {
 
   router.post("/bids", async (req, res) => {
     try {
-      const bid = await bidRepository.createBid(req.body);
+      const bid = await bidRepository.createBid({
+        amount: parseFloat(req.body.amount),
+        itemId: parseInt(req.body.itemId),
+      });
       res.status(201).json(bid);
     } catch (error) {
       res.status(500).send({ message: error.message });
@@ -30,7 +33,10 @@ function createBidRouter(bidRepository) {
   router.put("/bids/:id", async (req, res) => {
     try {
       const id = req.params.id;
-      const bid = await bidRepository.updateBid(id, req.body);
+      const bid = await bidRepository.updateBid(id, {
+        amount: parseFloat(req.body.amount),
+        itemId: parseInt(req.body.itemId),
+      });
       res.status(200).send(bid);
     } catch (error) {
       res.status(500).send({ message: error.message });

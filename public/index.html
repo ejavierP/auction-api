@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO Auction</title>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>Auction House</h1>
+    <div id="bids"></div>
+    <input id="amountInput" type="text" placeholder="Type a bid amount" />
+    <input id="itemIdInput" type="text" placeholder="Type a bid item" />
+    <button id="sendButton">Send</button>
+
+    <script>
+      const socket = io();
+
+      const bidsDiv = document.getElementById("bids");
+      const amountInput = document.getElementById("amountInput");
+      const itemIdInput = document.getElementById("itemIdInput");
+      const sendButton = document.getElementById("sendButton");
+
+      socket.on("initialBids", (bids) => {
+        bidsDiv.textContent = "";
+        bids.forEach((bid) => {
+          displayBids(bid);
+        });
+      });
+
+      sendButton.addEventListener("click", () => {
+        const amount = amountInput.value;
+        const item = itemIdInput.value;
+        if (amount && item) {
+          const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount: amount, itemId: item }),
+          };
+
+          fetch("http://localhost:8080/bids", requestOptions).then(
+            (response) => {
+              console.log("Bid placed!!!");
+              const bid = { amount: amount, itemId: item };
+              amountInput.value = "";
+              itemIdInput.value = "";
+              socket.emit("addBid", bid);
+            }
+          );
+        }
+      });
+
+      function displayBids(bid) {
+        const bidElement = document.createElement("div");
+        bidElement.textContent =
+          "Amount :" + " " + bid.amount + " " + " Item: " + bid.itemId;
+        bidsDiv.appendChild(bidElement);
+      }
+    </script>
+  </body>
+</html>
