@@ -6,6 +6,7 @@ module.exports = (io, bidRepository) => {
 
     socket.on("addBid", (item) => {
       bids.push(item)
+      console.log('Placing Bid');
       socket.emit('initialBids',bids)
     });
   });
