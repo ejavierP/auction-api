@@ -20,10 +20,9 @@ class SequelizeItemRepository {
 
   async createItem(item) {
     const itemData = await this.ItemModel.create({
-      status: item.status,
-      name: item.sellerId,
-      description: item.storeAddress,
-      stock: item.customerName,
+      name: item.name,
+      description: item.description,
+      stock: item.stock,
     });
 
     const itemId = itemData.id;

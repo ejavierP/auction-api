@@ -18,8 +18,8 @@ class SequelizeBidRepository {
   }
 
   async createBid(bid) {
-    const bidData = await this.ItemModel.create({
-      amount: bid.status,
+    const bidData = await this.bidModel.create({
+      amount: bid.amount,
       itemId: bid.itemId,
       createdDate: new Date().toDateString(),
     });
